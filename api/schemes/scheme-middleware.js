@@ -4,7 +4,7 @@ const db = require('../../data/db-config')
 
   status 404
   {
-    "message": "scheme with scheme_id <actual id> not found"
+    'message': 'scheme with scheme_id <actual id> not found'
   }
 */
 const checkSchemeId = async (req, res, next) => {
@@ -13,7 +13,7 @@ const checkSchemeId = async (req, res, next) => {
   console.log({schemeOfId})
   if (!schemeOfId === true) {
     res.status(404).json({
-      "message": `scheme with scheme_id ${req.params.id} not found`
+      'message': `scheme with scheme_id ${scheme_id} not found`
     })
   } else {
     next()
@@ -25,12 +25,18 @@ const checkSchemeId = async (req, res, next) => {
 
   status 400
   {
-    "message": "invalid scheme_name"
+    'message': 'invalid scheme_name'
   }
 */
 const validateScheme = (req, res, next) => {
-  console.log('validateScheme has started')
-  next()
+  const { scheme_name } = req.body
+  if (scheme_name === undefined || typeof scheme_name !== 'string' || scheme_name === '' ) {
+    res.status(400).json({
+      'message': 'invalid scheme_name'
+    })
+  } else {
+    next()
+  }
 }
 
 /*
@@ -39,12 +45,24 @@ const validateScheme = (req, res, next) => {
 
   status 400
   {
-    "message": "invalid step"
+    'message': 'invalid step'
   }
 */
 const validateStep = (req, res, next) => {
-  console.log('checkSchemeId has started')
-  next()
+  
+  const { scheme_name, step_number } = req.body
+  const isUndefined = scheme_name === undefined
+  const isNotAString = typeof scheme_name !== 'string'
+  const isEmpty = scheme_name === ''
+  const isTooSmall = isNaN(step_number)
+  const isNaNStep = step_number < 1
+  if (isUndefined||isNotAString||isEmpty||isTooSmall||isNaNStep) { 
+    res.status(400).json({
+      'message': 'invalid step'
+    })
+  } else {
+    next()
+  }
 }
 
 module.exports = {
